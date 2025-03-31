@@ -2,15 +2,19 @@
 Ziel: finde die Kantenlänge eine Kubus
 
 """
+
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import pandas as pd
 from magnumnp import *
-import numpy as np
 
 N = 10
 Ms = 8e5
 A = 13e-12
 
 
-def calc(L, mag_state: str):
+def calc(L, mag_state: str, folder: Path):
     # compute effective constants
     Keff = constants.mu_0 * Ms ** 2 / 2.
     l_ex = (A / Keff) ** 0.5
@@ -63,36 +67,104 @@ def calc(L, mag_state: str):
     llg.relax(state)
     E_vortex = float(aniso.E(state) + demag.E(state) + exchange.E(state))
 
-    write_vti(state.m, f"vortex_{str(L)}_{mag_state}.vti")
+    # Log VTI information
+    filename = folder / f"{mag_state}_{str(L)}.vti"
+    write_vti(state.m, str(filename))
     return E_vortex
 
 
-def main1():
+
+def main0(folder: Path):
     STATE = "flower"
-    with open(f"energy.txt", 'w') as file:
+    data = []  # List to store results
+    for i in range(1):
+        length = 8.0 + i / 10
+        print(f"\n\nlength: {length}")
+        e_vortex = calc(L=length, mag_state=STATE, folder=folder)
+        data.append({"State": STATE, "L": length, "E_vortex": e_vortex})
+
+    # Save DataFrame to CSV
+    df = pd.DataFrame(data)
+    csv_path = folder / "energy_results.csv"
+    df.to_csv(csv_path, index=False)
+    print(f"\nResults saved to {csv_path}")
+
+
+# =============================================================
+# Main Functions
+# =============================================================
+
+def main1(folder: Path):
+    STATE = "flower"
+    data = []  # List to store results
+    for i in range(11):
+        length = 8.0 + i / 10
+        print(f"\n\nlength: {length}")
+        e_vortex = calc(L=length, mag_state=STATE, folder=folder)
+        data.append({"State": STATE, "L": length, "E_vortex": e_vortex})
+
+    # Save DataFrame to CSV
+    df = pd.DataFrame(data)
+    csv_path = folder / "energy_results.csv"
+    df.to_csv(csv_path, index=False)
+    print(f"\nResults saved to {csv_path}")
+
+
+def main2(folder: Path):
+    data = []  # List to store results
+
+    mag_states = ["vortex", "flower"]
+    for mag_state in mag_states:
         for i in range(11):
-            lenght = 8.0 + i / 10
-            print(f"\n\nlenght: {lenght}")
-            e_vortex = calc(L=lenght, mag_state=STATE)
-            print(e_vortex)
+            length = 8.0 + i / 10
+            print(f"\n\nmag_state: {mag_state} and length: {length}")
+            e_vortex = calc(L=length, mag_state=mag_state, folder=folder)
+            data.append({"State": mag_state, "L": length, "E_vortex": e_vortex})
 
-            line = f"state: {STATE} | L: {str(lenght)} -> e_vortex: {e_vortex}\n"
-            file.write(line)
+    # Save DataFrame to CSV
+    df = pd.DataFrame(data)
+    csv_path = folder / "energy_results.csv"
+    df.to_csv(csv_path, index=False)
+    print(f"\nResults saved to {csv_path}")
 
 
-def main2():
-    with open(f"energy.txt", 'w') as file:
-        states = ["vortex", "flower"]
-        for state in states:
-            for i in range(11):
-                lenght = 8.0 + i / 10
-                print(f"\n\nlenght: {lenght}")
-                e_vortex = calc(L=lenght, mag_state=state)
-                print(e_vortex)
-
-                line = f"state: {state} | L: {str(lenght)} -> e_vortex: {e_vortex}\n"
-                file.write(line)
+def plot_energy_vs_length_for_states():
+    """
+    Compare the energy (E_vortex) across the two states over the values of L.
+    :return:
+    """
+    # Load the CSV file
+    csv_path = FOLDER / "energy_results.csv"
+    df = pd.read_csv(csv_path)
+    # Filter the data based on state
+    df_vortex = df[df["State"] == "vortex"]
+    df_flower = df[df["State"] == "flower"]
+    # Create the plot
+    plt.figure(figsize=(8, 5))
+    plt.plot(df_vortex["L"], df_vortex["E_vortex"], marker='o', linestyle='-', label="Vortex", color='blue')
+    plt.plot(df_flower["L"], df_flower["E_vortex"], marker='s', linestyle='--', label="Flower", color='red')
+    # Labels and title
+    plt.xlabel("L")
+    plt.ylabel("E_vortex")
+    plt.title("Comparison of E_vortex for Different States")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plot_path = FOLDER / "plot"
+    plt.savefig(plot_path)
+    # Show the plot
+    plt.show()
+    plt.close()
 
 
 if __name__ == '__main__':
-    main1()
+    FOLDER = Path(".") / "data"
+    os.makedirs(FOLDER, exist_ok=True)
+
+    #main0(FOLDER)
+    #main1(FOLDER)
+    main2(FOLDER)
+
+    plot_energy_vs_length_for_states()
+
+
