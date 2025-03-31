@@ -144,8 +144,8 @@ def plot_energy_vs_length_for_states():
     plt.plot(df_vortex["L"], df_vortex["E_vortex"], marker='o', linestyle='-', label="Vortex", color='blue')
     plt.plot(df_flower["L"], df_flower["E_vortex"], marker='s', linestyle='--', label="Flower", color='red')
     # Labels and title
-    plt.xlabel("L")
-    plt.ylabel("E_vortex")
+    plt.xlabel(r"L ($l_{ex}$)")
+    plt.ylabel(r"E_vortex ($K_m$)")
     plt.title("Comparison of E_vortex for Different States")
     plt.legend()
     plt.grid(True)
@@ -163,8 +163,7 @@ if __name__ == '__main__':
 
     #main0(FOLDER)
     #main1(FOLDER)
-    main2(FOLDER)
-
+    #main2(FOLDER)
     plot_energy_vs_length_for_states()
 
 
