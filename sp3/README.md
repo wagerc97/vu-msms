@@ -1,4 +1,7 @@
 # README
+from 27.3. Mumag SP3
+
+[µMAG Standard Problem #3](https://www.ctcms.nist.gov/~rdm/spec3.html)
 
 ## Exercise 
 A cube with edge length, L, 
