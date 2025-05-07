@@ -1,5 +1,6 @@
 # Shape Anisotropy
-03.04.2025
+
+from 03.04. Shape Ansisotropy 
 
 ```python
 from magnumnp import *  
