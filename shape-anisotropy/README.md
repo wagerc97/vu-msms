@@ -1,5 +1,6 @@
-# Exercise 3
-03.04.2025
+# Shape Anisotropy
+
+from 03.04. Shape Ansisotropy 
 
 ```python
 from magnumnp import *  
