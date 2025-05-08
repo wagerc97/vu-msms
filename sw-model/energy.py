@@ -8,7 +8,6 @@ K     = 1e4   # Anisotropy constant [J/m^3]
 
 def energy(phi, Hpar, Hperp):
     # TODO implement (use np.sin and np.cos)
-
     ...
 
 angles   = np.linspace(-90, 270, 361)
