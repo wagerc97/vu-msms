@@ -100,7 +100,7 @@ if __name__ == '__main__':
     epsilon = 1e-8
 
     # Angle of external field relative to the material's "easy" axis
-    theta_degree = 180.   # [degrees]
+    theta_degree = 45.   # [degrees]
 
     # material constants
     mu0 = 4 * np.pi * 1e-7  # [T·m/A] (Tesla meter per Ampere) — magnetic permeability of free space
