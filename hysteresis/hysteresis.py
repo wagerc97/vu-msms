@@ -100,14 +100,14 @@ if __name__ == '__main__':
     epsilon = 1e-8
 
     # Angle of external field relative to the material's "easy" axis
-    theta_degree = 45.   # [degrees]
+    theta_degree = 180.   # [degrees]
 
     # material constants
     mu0 = 4 * np.pi * 1e-7  # [T·m/A] (Tesla meter per Ampere) — magnetic permeability of free space
     Ms = 8e5                # [A/m] — saturation magnetization (how strongly magnetized it can get)
     # K = 1e4               # [J/m^3] (Joule per cubic meter) — anisotropy constant (tells how strongly the material “prefers” certain directions)
     Ks = [1e4, 1e5, 1e6, 1e7]  # vary the anisotropy constant
-    Ks = np.logspace(4, 6, 6)
+    Ks = np.logspace(4, 6, 3)
     print(f"Ks: {Ks}")
 
     for K in Ks:
