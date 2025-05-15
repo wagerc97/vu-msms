@@ -177,6 +177,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-.idea
-.code-workspace
-.vscode
+**.idea
+**.code-workspace
+**.vscode
