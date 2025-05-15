@@ -15,7 +15,7 @@ material = {
         }
 
 # initialize anisotropy field
-aniso    = AnisotropyField(mesh, material)
+aniso = AnisotropyField(mesh, material)
 
 # initialize random magnetization
 m0 = np.random.rand(n[0], n[1], n[2], 3) - 0.5
