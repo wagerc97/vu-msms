@@ -1,5 +1,13 @@
-from pathlib import Path
+"""
+Comprehensive Hysteresis Simulation
 
+(I added lots of comments to explain the code and make it easier to understand.)
+
+This script simulates the hysteresis loop of a magnetic material using the Landau-Lifshitz-Gilbert (LLG) equation.
+It calculates the equilibrium angle of magnetization for different external magnetic field strengths and plots the resulting magnetization projection.
+"""
+
+from pathlib import Path
 import numpy as np
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
@@ -13,7 +21,7 @@ def energy(phi, Hpar, Hperp):
     The applied magnetic field has two components: Hpar and Hperp
 
     :param phi: angle of magnetization of material in a plane
-    :param Hpar: parallel to the material’s “easy” direction (usually aligned with the crystal structure)
+    :param Hpar: parallel to the material's “easy” direction (usually aligned with the crystal structure)
     :param Hperp: perpendicular to the easy-axis
     :return:
     """
