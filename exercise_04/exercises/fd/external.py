@@ -10,27 +10,41 @@ class ExternalField(object):
         material: dict with 'Ms' (saturation magnetization in A/m)
         h: external field as a 3-element list or array [Hx, Hy, Hz] in Tesla
         """
-        self._mesh = mesh
-        self._Ms = material["Ms"]                    # [A/m]
-        self._h = np.zeros(mesh.n + (3,))            # shape = (Nx, Ny, Nz, 3)
-        self._h[:, :, :, :] = np.array(h)            # broadcast uniform external field [T]
+        self._mesh: np.ndarray = mesh                   # mesh object  
+        self._Ms: float = material["Ms"]                # [A/m]
+        self._h: np.ndarray = np.zeros(mesh.n + (3,))   # shape = (Nx, Ny, Nz, 3)
+        self._h[:, :, :, :] = np.array(h)               # broadcast uniform external field [T]
+
 
     def h(self, t, m):
         """Return the field at time t and magnetization m — independent of t, m here."""
         return self._h
 
-    def E(self, t, m):
+
+    def E(self, t, m: np.ndarray) -> float:
         """
         Compute Zeeman energy: E = - mu_0 * Ms * ∑ (m · H) * V
+
+        NOTE: For a discretized mesh, we sum over all cells:
 
         m: magnetization unit vector field, shape (Nx, Ny, Nz, 3)
         returns: Zeeman energy [J]
         """
-        V = self._mesh.cell_volume                  # volume of a single cell [m³]
+        V: np.ndarray = self._mesh.cell_volume      # volume of a single cell [m³]
         mu0 = constants.mu_0                        # vacuum permeability [T·m/A]
-        Ms = self._Ms                               # saturation magnetization [A/m]
-        H = self._h                                 # external field [T]
-        m_dot_H = np.sum(m * H, axis=3)             # dot product at each cell, result shape (Nx, Ny, Nz)
+        Ms: float = self._Ms                        # saturation magnetization [A/m]
+        H: np.ndarray = self._h                     # external field [T]
 
-        E_total = -mu0 * Ms * np.sum(m_dot_H) * V   # total energy [J]
+        # This line computes the dot product between the magnetization vector field m 
+        #  and the external magnetic field H, at each grid point in the 3D mesh.
+        # ~ the per-cell dot products
+        #
+        # Why do we use axis=3?
+        # - Because m is a 4D array with shape (Nx, Ny, Nz, 3), and we want to sum over the last dimension (3).
+        # - The last dimension (axis=3) corresponds to the 3 components of the magnetization vector (x,y,z).
+        m_dot_H: np.ndarray = np.sum(m * H, axis=3)  # has shape (Nx, Ny, Nz)
+
+        # Sum over each cell's dot product
+        E_total: float = -mu0 * Ms * np.sum(m_dot_H) * V   # total energy [J]
+
         return E_total
