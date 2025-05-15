@@ -30,3 +30,8 @@ ax.plot(Hs, ms)
 ax.set(xlabel='H', ylabel='M')
 ax.grid()
 plt.show()
+
+
+
+if __name__ == '__main__':
+    pass
