@@ -10,7 +10,7 @@ class Minimizer(object):
         result =- np.cross(m, np.cross(m, h))
         return result
 
-    def minimize(self, m, rtol = 1e-4, dt = 1e-2):
+    def minimize(self, m, rtol = 1e-4, dt = 1e-2, verbose = True):
         shape = m.shape
         ode = integrate.ode(lambda t, m: self._dm(t, m.reshape(shape)).reshape(-1))
         ode.set_initial_value(m.reshape(-1), 0.)
@@ -32,7 +32,7 @@ class Minimizer(object):
             dmdt = np.linalg.norm((m_current - m_next).reshape(-1), ord = np.inf) / dt
             # compute total energy
             E = np.sum([term.E(t, m_next) for term in self._terms])
-
-            print(f"dmdt = {dmdt:g}, E = {E:g}")
+            if verbose: 
+                print(f"dmdt = {dmdt:g}, E = {E:g}")
 
         return m_next

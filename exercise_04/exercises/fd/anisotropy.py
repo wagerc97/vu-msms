@@ -23,15 +23,15 @@ class AnisotropyField(object):
         Ms = self._Ms
         K = self._K
         e = self._K_axis
-        print(f"e.shape: {e.shape}")  #> (1, 1, 1, 3)
-        print(f"m.shape: {m.shape}")  #> (100, 25, 1, 3)
+        #print(f"e.shape: {e.shape}")  #> (1, 1, 1, 3)
+        #print(f"m.shape: {m.shape}")  #> (100, 25, 1, 3)
 
         # Compute the dot product between the anisotropy axis e and the magnetization vector field m
         m_dot_e = np.sum(m * e, axis=3, keepdims=True)  # # shape: (Nx, Ny, Nz, 1)
         
         # Compute the anisotropy field
         h = ((2 * K) / (mu_0 * Ms)) * m_dot_e * e  # broadcast to shape (Nx, Ny, Nz, 3)
-        print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
+        #print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
         return h
 
 
@@ -50,30 +50,19 @@ class AnisotropyField(object):
         #raise NotImplementedError
         ## Given 
         # K / (mu_0 * Ms) * <K_axis, m>^2
-        ## Corrected: 
+        ## Corrected ??? 
         # -K * <K_axis, m>^2
         #
         K = self._K
         e = self._K_axis
-        print(f"e.shape: {e.shape}")  #> (1, 1, 1, 3)
-        print(f"m.shape: {m.shape}")  #> (100, 25, 1, 3)
+        #print(f"e.shape: {e.shape}")  #> (1, 1, 1, 3)
+        #print(f"m.shape: {m.shape}")  #> (100, 25, 1, 3)
 
         # Compute the dot product between the magnetization vector field m and the anisotropy axis e
         e_dot_m = np.sum(e * m, axis=3)  # shape: (Nx, Ny, Nz)
 
         # Compute the anisotropy energy
         E = -K * e_dot_m**2
-        print(f"E.shape: {E.shape}")
+        #print(f"E.shape: {E.shape}")
         return E
-    
-
-    def E_total(self, t, m) -> float:
-        """Compute the total anisotropy energy. 
-
-        t (float): Time.
-        m (ndarray): Magnetization vector.
-        """
-        E = self.E(t, m)
-        E_total = np.sum(E) * self._mesh.cell_volume  # total energy [J]
-        return E_total
     
