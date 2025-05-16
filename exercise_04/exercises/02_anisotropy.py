@@ -22,7 +22,14 @@ m0 = np.random.rand(n[0], n[1], n[2], 3) - 0.5
 m0 = m0 / np.linalg.norm(m0, axis=3).repeat(3).reshape(m0.shape)
 
 # minimize energy
-write_vtr(m0, "m_start", mesh)
+result_path = Path("../results/anisotropy/").resolve()
+print(f"Results folder: {result_path}")
+result_path.mkdir(parents=True, exist_ok=True)
+
+write_vtr(m0, str(result_path/"m_start"), mesh)
+print("wrote initial state to filepath: ", result_path/"m_start")
+print("Minimizing energy...")
 minimizer = Minimizer([aniso])
 m = minimizer.minimize(m0, 1e-4, 1e-4)
-write_vtr(m, "m_relaxed", mesh)
+write_vtr(m, str(result_path/"m_relaxed"), mesh)
+print("wrote relaxed state to filepath: ", result_path/"m_relaxed")
