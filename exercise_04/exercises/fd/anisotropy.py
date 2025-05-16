@@ -66,4 +66,14 @@ class AnisotropyField(object):
         print(f"E.shape: {E.shape}")
         return E
     
+
+    def E_total(self, t, m) -> float:
+        """Compute the total anisotropy energy. 
+
+        t (float): Time.
+        m (ndarray): Magnetization vector.
+        """
+        E = self.E(t, m)
+        E_total = np.sum(E) * self._mesh.cell_volume  # total energy [J]
+        return E_total
     
