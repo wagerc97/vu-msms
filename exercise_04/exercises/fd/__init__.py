@@ -19,3 +19,8 @@ __all__ = [
         "write_vtr",
         "SpinTorque",
         ]
+
+print("fd module loaded")
+
+if __name__ == "__main__":
+    print("fd module is being run directly")
