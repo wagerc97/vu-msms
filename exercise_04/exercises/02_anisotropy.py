@@ -1,5 +1,6 @@
 from fd import *
 import numpy as np
+from pathlib import Path
 
 # initialize mesh
 n  = (100, 25, 1)
@@ -22,7 +23,7 @@ m0 = np.random.rand(n[0], n[1], n[2], 3) - 0.5
 m0 = m0 / np.linalg.norm(m0, axis=3).repeat(3).reshape(m0.shape)
 
 # minimize energy
-result_path = Path("../results/anisotropy/").resolve()
+result_path = Path("../output/anisotropy/").resolve()
 print(f"Results folder: {result_path}")
 result_path.mkdir(parents=True, exist_ok=True)
 

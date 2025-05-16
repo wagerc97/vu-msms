@@ -1,5 +1,6 @@
 from fd import *
 import numpy as np
+from pathlib import Path
 
 # initialize mesh
 n  = (100, 25, 1)
@@ -22,7 +23,14 @@ m0 = np.zeros(n + (3,))
 m0[:,:,:,0] = 1.0
 
 # minimize energy
-write_vtr(m0, "m_start", mesh)
+result_path = Path("../output/external/").resolve()
+print(f"Results folder: {result_path}")
+result_path.mkdir(parents=True, exist_ok=True)
+
+write_vtr(m0, str(result_path/"m_start"), mesh)
+print("wrote initial state to filepath: ", result_path/"m_start")
+print("Minimizing energy...")
 minimizer = Minimizer([external])
 m = minimizer.minimize(m0)
-write_vtr(m, "m_relaxed", mesh)
+write_vtr(m, str(result_path/"m_relaxed"), mesh)
+print("wrote relaxed state to filepath: ", result_path/"m_relaxed")
