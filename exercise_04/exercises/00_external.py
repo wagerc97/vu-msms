@@ -23,7 +23,7 @@ m0 = np.zeros(n + (3,))
 m0[:,:,:,0] = 1.0
 
 # minimize energy
-result_path = Path("../output/external/").resolve()
+result_path = Path(__file__).parents[1] / "output" / "external/"
 print(f"Results folder: {result_path}")
 result_path.mkdir(parents=True, exist_ok=True)
 

@@ -31,38 +31,35 @@ class AnisotropyField(object):
         
         # Compute the anisotropy field
         h = ((2 * K) / (mu_0 * Ms)) * m_dot_e * e  # broadcast to shape (Nx, Ny, Nz, 3)
-        #print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
+        print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
         return h
 
 
     def E(self, t, m) -> np.ndarray:
         """Compute the anisotropy energy. 
 
-        NOTE: 
-            - For E we do not divide by mu_0*Ms, because we only do that for the field.
+        Note: 
+            - For E does not depend on mu_0 and Ms
             - The K should be negative. 
 
         t (float): Time.
         m (ndarray): Magnetization vector.
         """
-        # TODO
-        # Implement anisotropy energy:
-        #raise NotImplementedError
-        ## Given 
+        ## Original  
         # K / (mu_0 * Ms) * <K_axis, m>^2
         ## Corrected ??? 
         # -K * <K_axis, m>^2
-        #
         K = self._K
         e = self._K_axis
         #print(f"e.shape: {e.shape}")  #> (1, 1, 1, 3)
         #print(f"m.shape: {m.shape}")  #> (100, 25, 1, 3)
 
         # Compute the dot product between the magnetization vector field m and the anisotropy axis e
-        e_dot_m = np.sum(e * m, axis=3)  # shape: (Nx, Ny, Nz)
+        e_dot_m = np.sum(e * m, axis=3, keepdims=False)  # shape: (Nx, Ny, Nz)
 
         # Compute the anisotropy energy
-        E = -K * e_dot_m**2
-        #print(f"E.shape: {E.shape}")
+        E = - K * e_dot_m**2
+        print(f"E.shape: {E.shape}")  #> (100, 25, 1, 3)
         return E
+    
     

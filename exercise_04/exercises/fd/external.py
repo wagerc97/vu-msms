@@ -16,18 +16,19 @@ class ExternalField(object):
         self._h[:, :, :, :] = np.array(h)               # broadcast uniform external field [T]
 
 
-    def h(self, t, m):
+    def h(self, t, m) -> np.ndarray:
         """Return the field at time t and magnetization m — independent of t, m here."""
+        print(f"self._h.shape: {self._h.shape}")  #> (100, 25, 1, 3)
         return self._h
 
 
     def E(self, t, m: np.ndarray) -> float:
         """
-        Compute Zeeman energy: E = - mu_0 * Ms * ∑ (m · H) * V
+        Compute Zeeman energy: 
+        E = -V * mu_0 * Ms * sum( m · H )
 
-        NOTE: For a discretized mesh, we sum over all cells:
+        Note: For a discretized mesh, we sum over all cells:
 
-        m: magnetization unit vector field, shape (Nx, Ny, Nz, 3)
         returns: Zeeman energy [J]
         """
         V: np.ndarray = self._mesh.cell_volume      # volume of a single cell [m³]
@@ -45,6 +46,7 @@ class ExternalField(object):
         m_dot_H: np.ndarray = np.sum(m * H, axis=3)  # has shape (Nx, Ny, Nz)
 
         # Sum over each cell's dot product
-        E_total: float = -mu0 * Ms * np.sum(m_dot_H) * V   # total energy [J]
+        E_total: float = - V * mu0 * Ms * np.sum(m_dot_H)  # total energy [J]
+        print(f"E_total: {E_total}")  #> E_total: -1e-24
 
         return E_total
