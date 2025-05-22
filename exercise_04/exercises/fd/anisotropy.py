@@ -31,11 +31,11 @@ class AnisotropyField(object):
         
         # Compute the anisotropy field
         h = ((2 * K) / (mu_0 * Ms)) * m_dot_e * e  # broadcast to shape (Nx, Ny, Nz, 3)
-        print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
+        #print(f"h.shape: {h.shape}")  #> (100, 25, 1, 3)
         return h
 
 
-    def E(self, t, m) -> np.ndarray:
+    def E1(self, t, m) -> np.ndarray:
         """Compute the anisotropy energy. 
 
         Note: 
@@ -45,9 +45,7 @@ class AnisotropyField(object):
         t (float): Time.
         m (ndarray): Magnetization vector.
         """
-        ## Original  
-        # K / (mu_0 * Ms) * <K_axis, m>^2
-        ## Corrected ??? 
+        # Implement 
         # -K * <K_axis, m>^2
         K = self._K
         e = self._K_axis
@@ -59,7 +57,17 @@ class AnisotropyField(object):
 
         # Compute the anisotropy energy
         E = - K * e_dot_m**2
-        print(f"E.shape: {E.shape}")  #> (100, 25, 1, 3)
+        #print(f"E.shape: {E.shape}")  #> (100, 25, 1, 3)
         return E
     
-    
+
+    def E(self, t, m) -> np.ndarray:
+        """
+        Compute the anisotropy energy from the effective field using the variational derivative.
+        """
+        Ms = self._Ms
+        mu_0 = constants.mu_0
+        h = self.h(t, m)
+        h_dot_m = np.sum(h * m, axis=3, keepdims=False)  # shape: (Nx, Ny, Nz)
+        E = - mu_0 * Ms * h_dot_m  # shape: (Nx, Ny, Nz)
+        return E
