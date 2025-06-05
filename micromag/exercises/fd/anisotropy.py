@@ -35,7 +35,7 @@ class AnisotropyField(object):
         return h
 
 
-    def E1(self, t, m) -> np.ndarray:
+    def E(self, t, m) -> np.ndarray:
         """Compute the anisotropy energy. 
 
         Note: 
@@ -61,7 +61,7 @@ class AnisotropyField(object):
         return E
     
 
-    def E(self, t, m) -> np.ndarray:
+    def E_from_field(self, t, m) -> np.ndarray:
         """
         Compute the anisotropy energy from the effective field using the variational derivative.
         """
@@ -69,5 +69,5 @@ class AnisotropyField(object):
         mu_0 = constants.mu_0
         h = self.h(t, m)
         h_dot_m = np.sum(h * m, axis=3, keepdims=False)  # shape: (Nx, Ny, Nz)
-        E = - mu_0 * Ms * h_dot_m  # shape: (Nx, Ny, Nz)
+        E = - 0.5 * mu_0 * Ms * h_dot_m  # shape: (Nx, Ny, Nz)
         return E
