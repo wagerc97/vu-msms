@@ -180,3 +180,4 @@ cython_debug/
 **.idea
 **.code-workspace
 **.vscode
+.aider*
