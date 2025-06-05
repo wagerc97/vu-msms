@@ -106,7 +106,7 @@ class DemagField(object):
         # h_pad = np.fft.irfftn(...)
         h_pad = np.fft.irfftn(
             a=self._h_fft,
-            s=self._m_pad.shape[:3],
+            #s=self._m_pad.shape,  # sequence not needed
             axes=list(filter(lambda i: self._mesh.n[i] > 1, range(3)))
         )
         # return unpadded h
@@ -129,4 +129,3 @@ class DemagField(object):
 
     def E(self, t, m):
         return - 0.5 * constants.mu_0 * self._mesh.cell_volume * np.sum(self._Ms * m * self.h(t, m))
-    
