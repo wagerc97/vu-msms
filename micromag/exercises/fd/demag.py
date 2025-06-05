@@ -53,6 +53,10 @@ class DemagField(object):
         self._Ms = material["Ms"]
         self._init_N()
 
+        # assert cache exists 
+        if not os.path.exists("cache"):
+            os.makedirs("cache")
+
     def _init_N_component(self, c, permute, func):
         it = np.nditer(self._N[:,:,:,c], flags=['multi_index'], op_flags=['writeonly'])
         while not it.finished:
@@ -100,8 +104,29 @@ class DemagField(object):
         # TODO
         # perform inverse FFT on h, e.g.
         # h_pad = np.fft.irfftn(...)
+        h_pad = np.fft.irfftn(
+            a=self._h_fft,
+            s=self._m_pad.shape[:3],
+            axes=list(filter(lambda i: self._mesh.n[i] > 1, range(3)))
+        )
         # return unpadded h
-        raise NotImplementedError
+        # EXPLANATION (copilot):
+        # h_pad is padded to the size of m_pad, which is larger than the mesh size
+        # because of the zero padding. We need to return only the part that corresponds
+        # to the mesh size, which is given by self._mesh.n.
+        # Therefore, we slice h_pad to the mesh size.
+        # The slicing [:self._mesh.n[0],:self._mesh.n[1],:self._mesh.n[2],:] ensures that we
+        # return only the part of h_pad that corresponds to the mesh size.
+        # This is necessary because the FFT and inverse FFT operations work on the padded array,
+        # but we want to return the demagnetizing field only for the original mesh size.
+        # This is a common practice in FFT-based calculations to avoid artifacts from the padding.
+        # The last dimension (:) is kept as is, because we want to return the full vector field.
+        # This way, we ensure that the returned demagnetizing field h has the same shape as m,
+        # which is (n[0], n[1], n[2], 3), where n is the mesh size.
+        # This is important for further calculations, e.g. in the LLG equation. 
+        return h_pad[:self._mesh.n[0],:self._mesh.n[1],:self._mesh.n[2],:]
+    
 
     def E(self, t, m):
         return - 0.5 * constants.mu_0 * self._mesh.cell_volume * np.sum(self._Ms * m * self.h(t, m))
+    
