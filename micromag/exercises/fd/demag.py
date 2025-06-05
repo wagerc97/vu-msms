@@ -86,16 +86,22 @@ class DemagField(object):
 
 
     def h(self, t, m):
+        # zero padding
+        self._m_pad[:self._mesh.n[0],:self._mesh.n[1],:self._mesh.n[2],:] = self._Ms * m
+
+        # FFT of padded magnetization
+        m_pad_fft = np.fft.rfftn(self._m_pad, axes = list(filter(lambda i: self._mesh.n[i] > 1, range(3))))
+
+        # tensor-vector multiplication in Fourier space
+        self._h_fft[:,:,:,0] = (self._N_fft[:,:,:,(0, 1, 2)]*m_pad_fft).sum(axis = 3)
+        self._h_fft[:,:,:,1] = (self._N_fft[:,:,:,(1, 3, 4)]*m_pad_fft).sum(axis = 3)
+        self._h_fft[:,:,:,2] = (self._N_fft[:,:,:,(2, 4, 5)]*m_pad_fft).sum(axis = 3)
+
         # TODO
-        # Implement convolution of demag tensor and magnetization:
-        # 1) zero pad of m
-        # 2) FFT(m)
-        # 3) Multiply N and m in Fourier space
-        # 4) iFFT on result
-        # 5) Remove extra cells due to zero padding
+        # perform inverse FFT on h, e.g.
+        # h_pad = np.fft.irfftn(...)
+        # return unpadded h
         raise NotImplementedError
 
     def E(self, t, m):
-        # TODO
-        # Implement demagnetization energy:
-        raise NotImplementedError
+        return - 0.5 * constants.mu_0 * self._mesh.cell_volume * np.sum(self._Ms * m * self.h(t, m))
